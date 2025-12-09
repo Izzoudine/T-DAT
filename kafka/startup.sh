@@ -28,7 +28,25 @@ echo "🌐 Installing Playwright Chromium..."
 playwright install chromium
 
 # ----------------------------
-# 4) Lancer les scripts en background
+# 4) Créer les topics Kafka
+# ----------------------------
+echo "📌 Creating Kafka topics..."
+docker exec -it kafka kafka-topics --bootstrap-server kafka:29092 --create \
+  --topic price-topic --partitions 1 --replication-factor 1
+
+docker exec -it kafka kafka-topics --bootstrap-server kafka:29092 --create \
+  --topic trade-topic --partitions 1 --replication-factor 1
+
+docker exec -it kafka kafka-topics --bootstrap-server kafka:29092 --create \
+  --topic alert-topic --partitions 1 --replication-factor 1
+
+docker exec -it kafka kafka-topics --bootstrap-server kafka:29092 --create \
+  --topic article-topic --partitions 1 --replication-factor 1
+
+docker exec -it kafka kafka-topics --bootstrap-server kafka:29092 --list
+
+# ----------------------------
+# 5) Lancer les scripts en background
 # ----------------------------
 echo "📡 Starting price-topic.py in background..."
 nohup python3 price-topic.py > price.log 2>&1 &
@@ -37,7 +55,7 @@ echo "📰 Starting article-topic.py in background..."
 nohup python3 article-topic.py > article.log 2>&1 &
 
 # ----------------------------
-# 5) Afficher les derniers logs
+# 6) Afficher les derniers logs
 # ----------------------------
 echo "📊 Last 10 lines of price.log:"
 tail -n 10 price.log
