@@ -127,7 +127,6 @@ def scrapper(url, website, type = 0):
                              }})
             # envoie asynchrone de l'arctile
             producer.send("article-topic", article)
-            producer.flush()
 
 
             print("DEBUG: Sending article:", article)
@@ -140,9 +139,9 @@ def scrapper(url, website, type = 0):
 
 def job():
     
-    scrapper("https://cointelegraph.com/rss", "cointelegraph.com")[6]
-    scrapper("https://coindesk.com/arc/outboundfeeds/rss", "coindesk.com" ,type=1)[6]
-    scrapper("https://decrypt.co/feed", "decrypt.co" ,type=1)[6]
+    scrapper("https://cointelegraph.com/rss", "cointelegraph.com")
+    scrapper("https://coindesk.com/arc/outboundfeeds/rss", "coindesk.com" ,type=1)
+    scrapper("https://decrypt.co/feed", "decrypt.co" ,type=1)
 
 
 def main():
@@ -157,4 +156,6 @@ def main():
         time.sleep(60)
 
 
+if __name__ == "__main__":
 
+  main()

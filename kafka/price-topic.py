@@ -2,6 +2,7 @@ import json
 import websocket
 from kafka import KafkaProducer
 import time
+import threading
 
 
 producer = KafkaProducer(
@@ -18,8 +19,14 @@ producer = KafkaProducer(
 WS_URL = "wss://ws.kraken.com"
 
 kraken_top8_pairs = [
-    "XBT/USD", "ETH/USD", "USDT/USD", "XRP/USD",
-    "BNB/USD", "SOL/USD", "USDC/USD", "ADA/USD"
+    "XBT/USD",   # BTC
+    "ETH/USD",
+    "USDT/USD",
+    "SOL/USD",
+    "ADA/USD",
+    "MATIC/USD",  # not BNB
+    "DOT/USD",
+    "LINK/USD"
 ]
 
 last_prices = {}
@@ -38,14 +45,17 @@ def send_alert(pair, alert_type, value):
     except Exception as e:
         print(f"Kafka alerts error: {e}")    
 
-def on_error(error):
+def on_error(ws, error):
     print(f"WebSocket Error: {error}")
+    if isinstance(error, Exception):
+        print(f"Error type: {type(error).__name__}: {error}")
 
-def on_close():
-    print("WebSocket fermé")
+def on_close(ws, close_status_code, close_msg):
+    print(f"WebSocket closed: {close_status_code} - {close_msg}")
 
 def on_open(ws):
     # abonnement ticker
+    print("Entered OnOpen")
     ws.send(json.dumps({
         "event": "subscribe",
         "pair": kraken_top8_pairs,
@@ -59,8 +69,9 @@ def on_open(ws):
         "subscription": {"name": "trade"}
     }))
 
-def on_message(message):
+def on_message(ws, message):
     data = json.loads(message)
+    print("Entered OnMessage")
     print("DEBUG: Received data:", data)
 
     # Ignore heartbeat
@@ -105,7 +116,6 @@ def on_message(message):
         # Envoyer à Kafka
         try:
             producer.send("price-topic", payload)
-            producer.flush()
 
             print(f"📊 {pair:9} | Last: {last_price:,.2f} USD | Change: {payload['pct_change']}")
         except Exception as e:
@@ -132,8 +142,19 @@ def on_message(message):
                 print(f"❌ Kafka trades error: {e}")
 
 
+def periodic_flush():
+    while True:
+        time.sleep(1)
+        try:
+            producer.flush(timeout=10)
+        except Exception as e:
+            print("Flush error:", e)
+
+threading.Thread(target=periodic_flush, daemon=True).start()
 
 if __name__ == "__main__":
+    print("Starting Kraken WebSocket → Kafka bridge...")
+
     ws = websocket.WebSocketApp(
         WS_URL,
         on_open=on_open,
@@ -141,9 +162,11 @@ if __name__ == "__main__":
         on_error=on_error,
         on_close=on_close
     )
-
-    # garder le websocker actif
-    ws.run_forever()
-    
+    # THIS IS THE KEY: automatic reconnection + ping
+    ws.run_forever(
+        ping_interval=30,  
+        ping_timeout=10,
+        reconnect=5            
+    )
 
 
