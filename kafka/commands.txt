@@ -1,8 +1,13 @@
 docker compose up -d
+
 python3 -m venv venv
-source venv/bin/activate && python3 -m pip install -r requirements.txt
-playwright install chromium
-nohup python3 price-topic.py > price.log 2>&1 &
-nohup python3 article-topic.py > article.log 2>&1 &
+
+./venv/bin/pip install -r requirements.txt
+
+./venv/bin/playwright install chromium
+
+nohup ./venv/bin/python3 price-topic.py > price.log 2>&1 &
+nohup ./venv/bin/python3 article-topic.py > article.log 2>&1 &
+
 tail -n 10 price.log
 tail -n 10 article.log
