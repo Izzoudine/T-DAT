@@ -1,0 +1,47 @@
+#!/bin/bash
+
+echo "🚀 Starting Kafka + Python data pipeline..."
+
+# ----------------------------
+# 1) Lancer Docker (Kafka + Zookeeper)
+# ----------------------------
+echo "🐳 Starting Docker containers..."
+docker compose up -d
+
+# ----------------------------
+# 2) Créer environnement Python
+# ----------------------------
+if [ ! -d "venv" ]; then
+    echo "🐍 Creating Python virtual environment..."
+    python3 -m venv venv
+fi
+
+echo "📦 Activating venv and installing dependencies..."
+source venv/bin/activate
+python3 -m pip install -r requirements.txt
+
+# ----------------------------
+# 3) Installer Playwright
+# ----------------------------
+echo "🌐 Installing Playwright Chromium..."
+playwright install chromium
+
+# ----------------------------
+# 4) Lancer les scripts en background
+# ----------------------------
+echo "📡 Starting price-topic.py in background..."
+nohup python3 price-topic.py > price.log 2>&1 &
+
+echo "📰 Starting article-topic.py in background..."
+nohup python3 article-topic.py > article.log 2>&1 &
+
+# ----------------------------
+# 5) Afficher les derniers logs
+# ----------------------------
+echo "📊 Last 10 lines of price.log:"
+tail -n 10 price.log
+
+echo "📰 Last 10 lines of article.log:"
+tail -n 10 article.log
+
+echo "✅ System started successfully!"
