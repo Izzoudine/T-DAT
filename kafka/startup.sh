@@ -1,5 +1,6 @@
 #!/bin/bash
-
+# chmod +x startup.sh
+# ./startup.sh
 echo "🚀 Starting Kafka + Python data pipeline..."
 
 # ----------------------------
