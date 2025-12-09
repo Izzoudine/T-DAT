@@ -28,8 +28,18 @@ echo "🌐 Installing Playwright Chromium..."
 playwright install chromium
 
 # ----------------------------
-# 4) Créer les topics Kafka
+# 4) Supprimer les anciens topics Kafka
 # ----------------------------
+
+docker exec -it kafka kafka-topics   --bootstrap-server kafka:29092   --delete   --topic price-topi
+docker exec -it kafka kafka-topics   --bootstrap-server kafka:29092   --delete   --topic trade-topic
+docker exec -it kafka kafka-topics   --bootstrap-server kafka:29092   --delete   --topic alert-topic
+docker exec -it kafka kafka-topics   --bootstrap-server kafka:29092   --delete   --topic article-topic
+
+# ----------------------------
+# 4) Creer les topics Kafka
+# ----------------------------
+
 echo "📌 Creating Kafka topics..."
 docker exec -it kafka kafka-topics --bootstrap-server kafka:29092 --create \
   --topic price-topic --partitions 1 --replication-factor 1
