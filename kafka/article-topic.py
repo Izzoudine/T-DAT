@@ -127,11 +127,15 @@ def scrapper(url, website, type = 0):
                              }})
             # envoie asynchrone de l'arctile
             producer.send("article-topic", article)
+            producer.flush()
+
+
+            print("DEBUG: Sending article:", article)
+
             time.sleep(1)
         browser.close()    
         
         # forcer envoie immediat de tout ce qui reste en attente
-        producer.flush()
 
 
 def job():

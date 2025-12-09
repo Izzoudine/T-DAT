@@ -2,7 +2,6 @@ import json
 import websocket
 from kafka import KafkaProducer
 import time
-import threading
 
 
 producer = KafkaProducer(
@@ -62,6 +61,7 @@ def on_open(ws):
 
 def on_message(message):
     data = json.loads(message)
+    print("DEBUG: Received data:", data)
 
     # Ignore heartbeat
     if isinstance(data, dict) and data.get("event") == "heartbeat":
@@ -105,6 +105,8 @@ def on_message(message):
         # Envoyer à Kafka
         try:
             producer.send("price-topic", payload)
+            producer.flush()
+
             print(f"📊 {pair:9} | Last: {last_price:,.2f} USD | Change: {payload['pct_change']}")
         except Exception as e:
             print(f"❌ Kafka ticker error: {e}")
@@ -123,6 +125,8 @@ def on_message(message):
             }
             try:
                 producer.send("trade-topic", payload)
+                producer.flush()
+
                 print(f"→ {pair:9} | {payload['side']} | {payload['price']:,.2f} USD | {payload['volume']}")
             except Exception as e:
                 print(f"❌ Kafka trades error: {e}")
