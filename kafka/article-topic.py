@@ -126,7 +126,7 @@ def scrapper(url, website, type = 0):
                                 'confidence': round(abs(compound), 3)
                              }})
             # envoie asynchrone de l'arctile
-            producer.send("raw-article", article)
+            producer.send("article-topic", article)
             time.sleep(1)
         browser.close()    
         

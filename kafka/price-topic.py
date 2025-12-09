@@ -34,7 +34,7 @@ def send_alert(pair, alert_type, value):
         "timestamp" : time.time()
     }
     try:
-        producer.send("raw-alert", payload)
+        producer.send("alert-topic", payload)
         producer.flush()
     except Exception as e:
         print(f"Kafka alerts error: {e}")    
@@ -104,7 +104,7 @@ def on_message(message):
 
         # Envoyer à Kafka
         try:
-            producer.send("raw-ticker", payload)
+            producer.send("price-topic", payload)
             print(f"📊 {pair:9} | Last: {last_price:,.2f} USD | Change: {payload['pct_change']}")
         except Exception as e:
             print(f"❌ Kafka ticker error: {e}")
@@ -122,7 +122,7 @@ def on_message(message):
                 "side": trade[3]  # "b" = buy, "s" = sell
             }
             try:
-                producer.send("raw-trade", payload)
+                producer.send("trade-topic", payload)
                 print(f"→ {pair:9} | {payload['side']} | {payload['price']:,.2f} USD | {payload['volume']}")
             except Exception as e:
                 print(f"❌ Kafka trades error: {e}")

@@ -1,0 +1,13 @@
+docker exec -it kafka kafka-topics --bootstrap-server kafka:29092 --create \
+  --topic price-topic --partitions 1 --replication-factor 1
+
+docker exec -it kafka kafka-topics --bootstrap-server kafka:29092 --create \
+  --topic trade-topic --partitions 1 --replication-factor 1
+
+docker exec -it kafka kafka-topics --bootstrap-server kafka:29092 --create \
+  --topic alert-topic --partitions 1 --replication-factor 1
+
+docker exec -it kafka kafka-topics --bootstrap-server kafka:29092 --create \
+  --topic article-topic --partitions 1 --replication-factor 1
+
+docker exec -it kafka kafka-topics --bootstrap-server kafka:29092 --list
