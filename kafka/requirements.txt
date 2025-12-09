@@ -1,0 +1,7 @@
+bs4
+playwright
+vaderSentiment
+schedule
+kafka
+websocket
+# playwright install chromium
