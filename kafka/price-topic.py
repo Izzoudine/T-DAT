@@ -6,7 +6,7 @@ import threading
 
 
 producer = KafkaProducer(
-    bootstrap_servers = 'localhost:9092',
+    bootstrap_servers = '20.199.136.163:9092',
     value_serializer=lambda v:json.dumps(v).encode('utf-8'),
     # le leader confirme l'ecriture avant de continuer
     acks=1,
@@ -139,8 +139,7 @@ if __name__ == "__main__":
     )
 
     # garder le websocker actif
-    wst = threading.Thread(target=ws.run_forver)
-    ws.start()
+    ws.run_forever()
     
 
 

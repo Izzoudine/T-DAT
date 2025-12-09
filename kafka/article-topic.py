@@ -53,7 +53,7 @@ crypto_keywords_extended = list(OrderedDict.fromkeys([
 
 sentiment_analyzer = SentimentIntensityAnalyzer()
 producer = KafkaProducer(
-            bootstrap_servers='localhost:9092',
+            bootstrap_servers='20.199.136.163:9092',
             value_serializer=lambda v: json.dumps(v).encode('utf-8'),
             # le leader confirme l'ecriture avant de continuer
             acks=1,
