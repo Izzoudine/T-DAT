@@ -31,7 +31,7 @@ playwright install chromium
 # 4) Supprimer les anciens topics Kafka
 # ----------------------------
 
-docker exec -it kafka kafka-topics   --bootstrap-server kafka:29092   --delete   --topic price-topi
+docker exec -it kafka kafka-topics   --bootstrap-server kafka:29092   --delete   --topic price-topic
 docker exec -it kafka kafka-topics   --bootstrap-server kafka:29092   --delete   --topic trade-topic
 docker exec -it kafka kafka-topics   --bootstrap-server kafka:29092   --delete   --topic alert-topic
 docker exec -it kafka kafka-topics   --bootstrap-server kafka:29092   --delete   --topic article-topic
