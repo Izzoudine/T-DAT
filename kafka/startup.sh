@@ -73,4 +73,7 @@ tail -n 10 price.log
 echo "📰 Last 10 lines of article.log:"
 tail -n 10 article.log
 
+echo "Making the topics available"
+nohup python3 ws.py > ws.log 2>&1 &
+
 echo "✅ System started successfully!"
