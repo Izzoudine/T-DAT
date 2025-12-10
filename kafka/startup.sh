@@ -77,3 +77,16 @@ echo "Making the topics available"
 nohup python3 ws.py > ws.log 2>&1 &
 
 echo "✅ System started successfully!"
+
+
+
+# read the messages
+
+# docker exec -it kafka kafka-console-consumer \
+    #--bootstrap-server kafka:29092 \
+    #--topic price-topic \
+    #--from-beginning
+
+# ps aux | grep ws.py
+# lister les process de ws lancer en background
+# kill -9 ID en supprimer 1
