@@ -6,4 +6,5 @@ websocket-client
 lxml
 websockets
 aiokafka
+kafka-python
 # playwright install chromium

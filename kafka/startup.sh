@@ -2,7 +2,7 @@
 # chmod +x startup.sh
 # ./startup.sh
 echo "🚀 Starting Kafka + Python data pipeline..."
-
+pkill -f python3
 # ----------------------------
 # 1) Lancer Docker (Kafka + Zookeeper)
 # ----------------------------
@@ -10,7 +10,22 @@ echo "🐳 Starting Docker containers..."
 docker compose up -d
 
 # ----------------------------
-# 2) Créer environnement Python
+# 2) CONFIGURATION MAGIC HOST (Nouveau !)
+# ----------------------------
+# On map 'kafka' vers '127.0.0.1' pour que le script Python sur la VM
+# puisse parler au container via le nom qu'il annonce.
+echo "🔧 Configuring /etc/hosts for Kafka..."
+
+if grep -q "127.0.0.1 kafka" /etc/hosts; then
+    echo "✅ Host entry 'kafka' already exists."
+else
+    echo "➕ Adding '127.0.0.1 kafka' to /etc/hosts..."
+    # sudo est nécessaire ici. Le script te demandera ton mot de passe si besoin.
+    echo "127.0.0.1 kafka" | sudo tee -a /etc/hosts > /dev/null
+fi
+
+# ----------------------------
+# 3) Créer environnement Python
 # ----------------------------
 if [ ! -d "venv" ]; then
     echo "🐍 Creating Python virtual environment..."
@@ -22,13 +37,13 @@ source venv/bin/activate
 python3 -m pip install -r requirements.txt
 
 # ----------------------------
-# 3) Installer Playwright
+# 4) Installer Playwright
 # ----------------------------
 echo "🌐 Installing Playwright Chromium..."
 playwright install chromium
 
 # ----------------------------
-# 4) Supprimer les anciens topics Kafka
+# 5) Supprimer les anciens topics Kafka
 # ----------------------------
 
 docker exec -it kafka kafka-topics   --bootstrap-server kafka:29092   --delete   --topic price-topic
@@ -37,7 +52,7 @@ docker exec -it kafka kafka-topics   --bootstrap-server kafka:29092   --delete  
 docker exec -it kafka kafka-topics   --bootstrap-server kafka:29092   --delete   --topic article-topic
 
 # ----------------------------
-# 4) Creer les topics Kafka
+# 6) Creer les topics Kafka
 # ----------------------------
 
 echo "📌 Creating Kafka topics..."
@@ -56,7 +71,7 @@ docker exec -it kafka kafka-topics --bootstrap-server kafka:29092 --create \
 docker exec -it kafka kafka-topics --bootstrap-server kafka:29092 --list
 
 # ----------------------------
-# 5) Lancer les scripts en background
+# 7) Lancer les scripts en background
 # ----------------------------
 echo "📡 Starting price-topic.py in background..."
 nohup python3 price-topic.py > price.log 2>&1 &
@@ -65,8 +80,10 @@ echo "📰 Starting article-topic.py in background..."
 nohup python3 article-topic.py > article.log 2>&1 &
 
 # ----------------------------
-# 6) Afficher les derniers logs
+# 8) Afficher les derniers logs
 # ----------------------------
+
+sleep 2
 echo "📊 Last 10 lines of price.log:"
 tail -n 10 price.log
 
