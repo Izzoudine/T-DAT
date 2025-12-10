@@ -89,4 +89,7 @@ echo "✅ System started successfully!"
 
 # ps aux | grep ws.py
 # lister les process de ws lancer en background
-# kill -9 ID en supprimer 1
+# kill -9 ID en supprimer 
+
+# process sur le port 9092
+# sudo lsof -i :9092

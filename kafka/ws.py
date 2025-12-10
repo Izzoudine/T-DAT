@@ -6,7 +6,7 @@ import websockets
 # --------------------
 # CONFIG Kafka
 # --------------------
-KAFKA_BOOTSTRAP = 'localhost:29092'  # adresse de ton broker Kafka
+KAFKA_BOOTSTRAP = 'kafka:29092'  # adresse de ton broker Kafka
 KAFKA_TOPICS = ['price-topic', 'trade-topic', 'alert-topic', 'article-topic']  # tous les topics que tu veux exposer
 
 consumer = KafkaConsumer(
