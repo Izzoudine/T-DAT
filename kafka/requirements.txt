@@ -2,8 +2,8 @@ bs4
 playwright
 vaderSentiment
 schedule
-kafka-python
 websocket-client
 lxml
 websockets
+aiokafka
 # playwright install chromium
