@@ -2,7 +2,7 @@
 # chmod +x startup.sh
 # ./startup.sh
 echo "🚀 Starting Kafka + Python data pipeline..."
-pkill -f python3
+sudo pkill -f python3
 # ----------------------------
 # 1) Lancer Docker (Kafka + Zookeeper)
 # ----------------------------
@@ -91,7 +91,7 @@ echo "📰 Last 10 lines of article.log:"
 tail -n 10 article.log
 
 echo "Making the topics available"
-nohup python3 ws.py > ws.log 2>&1 &
+nohup python3 -u ws.py > ws.log 2>&1 &
 
 echo "✅ System started successfully!"
 
